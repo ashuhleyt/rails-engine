@@ -36,5 +36,18 @@ describe "merchants API" do
       expect(merchant).to have_key(:name)
       expect(merchant[:name]).to be_a(String)
     end
+
+    it 'can get all items for a specific merchant based off id' do 
+      merchant1 = create(:merchant)
+      item1 = create(:item, merchant_id: merchant1.id)
+      item2 = create(:item, merchant_id: merchant1.id)
+
+      get "/api/v1/merchants/#{merchant1.id}/items"
+
+      items = JSON.parse(response.body, symbolize_names: true)
+
+      expect(response).to be_successful
+      expect(items[:data].count).to eq(2)
+    end
   end
 end
