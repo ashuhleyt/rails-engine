@@ -38,16 +38,16 @@ describe "merchants API" do
     end
 
     it 'can get all items for a specific merchant based off id' do 
-      id = create(:merchant).id 
+      merchant1 = create(:merchant)
+      item1 = create(:item, merchant_id: merchant1.id)
+      item2 = create(:item, merchant_id: merchant1.id)
 
-      create_list(:item, 4, merchant_id: id)
-
-      get "/api/v1/merchants/#{id}/items"
+      get "/api/v1/merchants/#{merchant1.id}/items"
 
       items = JSON.parse(response.body, symbolize_names: true)
 
       expect(response).to be_successful
-      expect(items[:data].count).to eq(4)
+      expect(items[:data].count).to eq(2)
     end
   end
 end
