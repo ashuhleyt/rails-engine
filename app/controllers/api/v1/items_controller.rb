@@ -1,6 +1,5 @@
 class Api::V1::ItemsController < ApplicationController 
   def index 
-
     if params[:merchant_id]
       render json: ItemSerializer.new(Item.where(merchant_id: params[:merchant_id]))
     else 
@@ -23,6 +22,10 @@ class Api::V1::ItemsController < ApplicationController
     merchant = Merchant.find_by(id: item_params[:merchant_id])
     item = Item.update(params[:id], item_params)
     render json: ItemSerializer.new(item) 
+  end
+
+  def destroy
+    item = Item.find(params[:id]).destroy
   end
 
   private
