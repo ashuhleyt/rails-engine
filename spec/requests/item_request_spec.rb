@@ -93,5 +93,31 @@ describe "items API" do
       expect(item.name).to eq("Liver Mousse") 
     end
   end 
+
+  context 'Patch /api/v1/items' do 
+    it 'can delete an item' do 
+      item = create(:item)
+      
+      expect(Item.count).to eq(1)
+        
+      delete "/api/v1/items/#{item.id}"
+      expect(response).to be_successful
+      expect(Item.count).to eq(0)
+      expect{Item.find(item.id)}.to raise_error(ActiveRecord::RecordNotFound)
+    end
+  end 
+
+  context 'Get /api/v1/items/item_id/merchant' do 
+    it 'lists the merchant for a given item by id' do 
+      id = create(:item).id
+      item = create(:item, merchant_id :id)
+
+      get "/api/v1/items/#{item.id}/merchant"
+      merchant = JSON.parse(response.body, symbolize_names: true)
+
+      expect(response).to be_successful
+      
+    end
+  end
 end 
       
