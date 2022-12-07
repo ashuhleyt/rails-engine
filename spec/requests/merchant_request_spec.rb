@@ -39,8 +39,8 @@ describe "merchants API" do
 
     it 'can get all items for a specific merchant based off id' do 
       merchant1 = create(:merchant)
-      item1 = create(:item, merchant_id: merchant1.id)
-      item2 = create(:item, merchant_id: merchant1.id)
+      item1 = create(:item, merchant_id: merchant1.id, description: "dinglehopper", unit_price: 4.20)
+      item2 = create(:item, merchant_id: merchant1.id, description: "cat food", unit_price: 69.69)
 
       get "/api/v1/merchants/#{merchant1.id}/items"
 
@@ -48,6 +48,18 @@ describe "merchants API" do
 
       expect(response).to be_successful
       expect(items[:data].count).to eq(2)
+      items[:data].each do |item|
+        expect(item).to have_key(:id)
+        expect(item[:id]).to be_a(String)
+        expect(item).to have_key(:type)
+        expect(item[:type]).to be_a(String)
+        expect(item[:attributes]).to have_key(:name)
+        expect(item[:attributes][:name]).to be_a(String)
+        expect(item[:attributes]).to have_key(:description)
+        expect(item[:attributes][:description]).to be_a(String)
+        expect(item[:attributes]).to have_key(:unit_price)
+        expect(item[:attributes][:unit_price]).to be_a(Float)
+      end
     end
   end
 end

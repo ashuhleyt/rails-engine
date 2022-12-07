@@ -13,6 +13,12 @@ class Api::V1::ItemsController < ApplicationController
     render json: ItemSerializer.new(item), status: 201
   end
 
+  def update 
+    merchant = Merchant.find_by(id: item_params[:merchant_id])
+    item = Item.update(params[:id], item_params)
+    render json: ItemSerializer.new(item) #what the fuck am i doing here :) 
+  end
+
   private
 
   def item_params

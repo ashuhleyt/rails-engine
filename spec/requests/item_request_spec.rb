@@ -51,13 +51,12 @@ describe "items API" do
   end
   
   context "Post /api/v1/items" do 
-
     it 'can create a new item' do 
       merchant = create(:merchant)
       item_params = ({
-        name: "Chicken Pate",
+        name: "Chicken Paté",
         description: "Kitten Food",
-        unit_price: 100.99,
+        unit_price: 42.99,
         merchant_id: merchant.id
         })
         headers = {"CONTENT_TYPE" => "application/json"}
@@ -71,6 +70,28 @@ describe "items API" do
       expect(new_item.description).to eq(item_params[:description])
       expect(new_item.unit_price).to eq(item_params[:unit_price])
       expect(new_item.merchant_id).to eq(item_params[:merchant_id])
-      end
     end
   end
+
+  context 'Patch /api/v1/items' do 
+    it 'can update an item' do 
+      id = create(:item).id
+      merchant = create(:merchant)
+      previous_name = Item.last.name
+      item_params = ({
+        name: "Liver Mousse",
+        description: "Kitten Food",
+        unit_price: 42.99,
+        merchant_id: merchant.id
+        })
+      headers = {"CONTENT_TYPE" => "application/json"}
+      patch "/api/v1/items/#{id}", headers: headers, params: JSON.generate({item: item_params})
+      item = Item.find_by(id: id)
+        
+      expect(response).to be_successful
+      expect(item.name).to_not eq(previous_name)
+      expect(item.name).to eq("Liver Mousse") 
+    end
+  end 
+end 
+      
