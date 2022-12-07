@@ -31,23 +31,25 @@ describe "merchants API" do
       merchant = JSON.parse(response.body, symbolize_names: true)
       expect(response).to be_successful 
 
-      expect(merchant).to have_key(:id)
-      expect(merchant[:id]).to be_a(Integer)
-      expect(merchant).to have_key(:name)
-      expect(merchant[:name]).to be_a(String)
+      expect(merchant[:data]).to have_key(:id)
+      expect(merchant[:data][:id]).to be_a(String)
+      expect(merchant[:data]).to have_key(:type)
+      expect(merchant[:data][:type]).to be_a(String)
+      expect(merchant[:data][:attributes]).to have_key(:name)
+      expect(merchant[:data][:attributes][:name]).to be_a(String)
     end
 
     it 'can get all items for a specific merchant based off id' do 
-      merchant1 = create(:merchant)
-      item1 = create(:item, merchant_id: merchant1.id, description: "dinglehopper", unit_price: 4.20)
-      item2 = create(:item, merchant_id: merchant1.id, description: "cat food", unit_price: 69.69)
+      merchant1 = create(:merchant).id
+      create_list(:item, 10, merchant_id: merchant1)
 
-      get "/api/v1/merchants/#{merchant1.id}/items"
+      get "/api/v1/merchants/#{merchant1}/items"
 
       items = JSON.parse(response.body, symbolize_names: true)
 
       expect(response).to be_successful
-      expect(items[:data].count).to eq(2)
+      expect(items[:data].count).to eq(10)
+
       items[:data].each do |item|
         expect(item).to have_key(:id)
         expect(item[:id]).to be_a(String)
