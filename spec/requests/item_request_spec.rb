@@ -109,14 +109,17 @@ describe "items API" do
 
   context 'Get /api/v1/items/item_id/merchant' do 
     it 'lists the merchant for a given item by id' do 
-      id = create(:item).id
-      item = create(:item, merchant_id :id)
+      id = create(:merchant).id
+      item = create(:item, merchant_id: id)
 
       get "/api/v1/items/#{item.id}/merchant"
       merchant = JSON.parse(response.body, symbolize_names: true)
 
       expect(response).to be_successful
-      
+      expect(merchant[:data]).to have_key(:id)
+      expect(merchant[:data]).to have_key(:type)
+      expect(merchant[:data][:attributes]).to have_key(:name)
+      expect(merchant[:data][:attributes][:name]).to be_a(String)
     end
   end
 end 
