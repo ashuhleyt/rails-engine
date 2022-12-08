@@ -5,4 +5,8 @@ class Item < ApplicationRecord
   validates :name, presence: true
   validates :description, presence: true
   validates :unit_price, presence: true
+
+  def self.find_item(string)
+    where('name ILIKE ?', "%#{string}%").order('name').first
+  end
 end
