@@ -74,8 +74,15 @@ describe "merchants API" do
       get "/api/v1/merchants/find_all?name=burg"
 
       merchant = JSON.parse(response.body, symbolize_names: true)
-
       expect(response).to be_successful
+      merchant[:data].each do |merchant|
+        expect(merchant).to have_key(:id)
+        expect(merchant[:id]).to be_a(String)
+        expect(merchant).to have_key(:type)
+        expect(merchant[:type]).to be_a(String)
+        expect(merchant[:attributes]).to have_key(:name)
+        expect(merchant[:attributes][:name]).to be_a(String)
+      end
     end
   end
 end
