@@ -1,7 +1,11 @@
 class Api::V1::ItemsController < ApplicationController 
   def index 
-    if params[:merchant_id] && Merchant.exists?(params[:merchant_id])
-      render json: ItemSerializer.new(Item.where(merchant_id: params[:merchant_id]))
+    if params[:merchant_id] 
+      if Merchant.exists?(params[:merchant_id])
+        render json: ItemSerializer.new(Item.where(merchant_id: params[:merchant_id]))
+      else  
+        render json: {errors: "no items found"}, status: 404
+      end 
     else 
       render json: ItemSerializer.new(Item.all)
     end 
@@ -28,6 +32,7 @@ class Api::V1::ItemsController < ApplicationController
     #   end
     # else
     # end
+    #render json: {error: "item not updated"}, status: 404
   end
 
   def destroy
