@@ -1,6 +1,6 @@
 class Api::V1::ItemsController < ApplicationController 
   def index 
-    if params[:merchant_id]
+    if params[:merchant_id] && Merchant.exists?(params[:merchant_id])
       render json: ItemSerializer.new(Item.where(merchant_id: params[:merchant_id]))
     else 
       render json: ItemSerializer.new(Item.all)
@@ -22,6 +22,12 @@ class Api::V1::ItemsController < ApplicationController
     merchant = Merchant.find_by(id: item_params[:merchant_id])
     item = Item.update(params[:id], item_params)
     render json: ItemSerializer.new(item) 
+    # if Item.exists?(params[:id])
+    #   if item_params.has_key?(:merchant_id) && !item_params.valid?(:merchant_id)
+    #     render json: {"errors": "Item doesn't exist"}, status: 404
+    #   end
+    # else
+    # end
   end
 
   def destroy

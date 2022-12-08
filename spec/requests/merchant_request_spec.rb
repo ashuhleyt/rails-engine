@@ -64,4 +64,18 @@ describe "merchants API" do
       end
     end
   end
+
+  context 'happy path' do 
+    it 'returns all merchants that match fragment when query is incomplete' do 
+      merchant1 = create(:merchant, name: "Hamburglers")
+      merchant2 = create(:merchant, name: "Bobs Burgers")
+      merchant3 = create(:merchant, name: "Hot Glizzies")
+      
+      get "/api/v1/merchants/find_all?name=burg"
+
+      merchant = JSON.parse(response.body, symbolize_names: true)
+
+      expect(response).to be_successful
+    end
+  end
 end
