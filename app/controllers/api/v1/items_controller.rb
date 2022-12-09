@@ -11,9 +11,12 @@ class Api::V1::ItemsController < ApplicationController
     end 
   end
 
-  def show 
-    item = Item.find(params[:id])
-    render json: ItemSerializer.new(item)
+  def show
+    if Item.exists?(params[:id])
+      render json: ItemSerializer.new(Item.find(params[:id]))
+    else
+      render json: { error: 'No item found' }, status: 404
+    end
   end
 
   def create
@@ -21,18 +24,17 @@ class Api::V1::ItemsController < ApplicationController
     render json: ItemSerializer.new(item), status: 201
   end
 
-  def update 
-    item1 = Item.find(params[:id])
-    merchant = Merchant.find_by(id: item_params[:merchant_id])
-    item = Item.update(params[:id], item_params)
-    render json: ItemSerializer.new(item) 
-    # if Item.exists?(params[:id])
-    #   if item_params.has_key?(:merchant_id) && !item_params.valid?(:merchant_id)
-    #     render json: {"errors": "Item doesn't exist"}, status: 404
-    #   end
-    # else
-    # end
-    #render json: {error: "item not updated"}, status: 404
+  def update
+    if Item.exists?(params[:id])
+      item = Item.find(params[:id])
+      if item.update(item_params)
+        render json: ItemSerializer.new(item)
+      else
+        render json: { error: 'Item not updated' }, status: 404
+      end
+    else
+      render json: { error: 'No item found' }, status: 404
+    end
   end
 
   def destroy

@@ -197,7 +197,7 @@ describe "items API" do
       expect(item[:data][:attributes]).to have_key(:merchant_id)
       expect(item[:data][:attributes][:merchant_id]).to be_a(Integer)
 
-      ####WORK IN PROGRESS###
+      ####WORK IN PROGRESS### #get "/api/v1/items/find?name=homie&min_price=50"
     end
   end
 end 
