@@ -117,13 +117,15 @@ describe "items API" do
 
       expect(response).to be_successful
       expect(merchant[:data]).to have_key(:id)
+      expect(merchant[:data][:id]).to be_a(String)
       expect(merchant[:data]).to have_key(:type)
+      expect(merchant[:data][:type]).to be_a(String)
       expect(merchant[:data][:attributes]).to have_key(:name)
       expect(merchant[:data][:attributes][:name]).to be_a(String)
     end
   end
 
-  context 'api/v1/items/find?name=hArU' do 
+  context 'api/v1/items/find?name=hArU, happy path' do 
     it 'lists one item when query is incomplete' do 
       merchant1 = create(:merchant)
       merchant2 = create(:merchant)
@@ -135,7 +137,67 @@ describe "items API" do
       item5 = Item.create!(name: "Bird", description: "Loud Pet", unit_price: 420, merchant_id: merchant2.id)
 
       get "/api/v1/items/find?name=fis"
+      item = JSON.parse(response.body, symbolize_names: true)
       expect(response).to be_successful
+      expect(item[:data]).to have_key(:id)
+      expect(item[:data][:id]).to be_a(String)
+      expect(item[:data]).to have_key(:type)
+      expect(item[:data][:type]).to be_a(String)
+      expect(item[:data][:attributes]).to have_key(:name)
+      expect(item[:data][:attributes][:name]).to be_a(String)
+      expect(item[:data][:attributes]).to have_key(:description)
+      expect(item[:data][:attributes][:description]).to be_a(String)
+      expect(item[:data][:attributes]).to have_key(:unit_price)
+      expect(item[:data][:attributes][:unit_price]).to be_a(Float)
+      expect(item[:data][:attributes]).to have_key(:merchant_id)
+      expect(item[:data][:attributes][:merchant_id]).to be_a(Integer)
+    end
+  end
+
+  # context 'api/v1/items/find?name=hArU, sad path path' do 
+  #   it 'lists one item when query is incomplete' do 
+  #     merchant1 = create(:merchant)
+  #     merchant2 = create(:merchant)
+
+  #     item1 = Item.create!(name: "Cat", description: "furry pet", unit_price: 40, merchant_id: merchant2.id)
+  #     item2 = Item.create!(name: "Dog", description: "sometimes furry pet", unit_price: 60, merchant_id: merchant1.id)
+  #     item3 = Item.create!(name: "Fish", description: "Wet Pet", unit_price: 26, merchant_id: merchant1.id)
+  #     item4 = Item.create!(name: "Beta Fish", description: "Mean Pet", unit_price: 69, merchant_id: merchant1.id)
+  #     item5 = Item.create!(name: "Bird", description: "Loud Pet", unit_price: 420, merchant_id: merchant2.id)
+
+  #     get "/api/v1/items/find?name=fis"
+  #     expect(response).to be_successful
+  #   end
+  # end
+
+  context 'api/v1/items/find?min_price=50' do 
+    it 'lists only one item at minimum price of 50' do 
+      merchant1 = create(:merchant)
+      merchant2 = create(:merchant)
+
+      item1 = Item.create!(name: "Cat", description: "furry pet", unit_price: 40, merchant_id: merchant2.id)
+      item2 = Item.create!(name: "Dog", description: "sometimes furry pet", unit_price: 60, merchant_id: merchant1.id)
+      item3 = Item.create!(name: "Fish", description: "Wet Pet", unit_price: 26, merchant_id: merchant1.id)
+      item4 = Item.create!(name: "Beta Fish", description: "Mean Pet", unit_price: 69, merchant_id: merchant1.id)
+      item5 = Item.create!(name: "Bird", description: "Loud Pet", unit_price: 420, merchant_id: merchant2.id)
+
+      get "/api/v1/items/find?min_price=50"
+      item = JSON.parse(response.body, symbolize_names: true)
+      expect(response).to be_successful
+      expect(item[:data]).to have_key(:id)
+      expect(item[:data][:id]).to be_a(String)
+      expect(item[:data]).to have_key(:type)
+      expect(item[:data][:type]).to be_a(String)
+      expect(item[:data][:attributes]).to have_key(:name)
+      expect(item[:data][:attributes][:name]).to be_a(String)
+      expect(item[:data][:attributes]).to have_key(:description)
+      expect(item[:data][:attributes][:description]).to be_a(String)
+      expect(item[:data][:attributes]).to have_key(:unit_price)
+      expect(item[:data][:attributes][:unit_price]).to be_a(Float)
+      expect(item[:data][:attributes]).to have_key(:merchant_id)
+      expect(item[:data][:attributes][:merchant_id]).to be_a(Integer)
+
+      ####WORK IN PROGRESS### #get "/api/v1/items/find?name=homie&min_price=50"
     end
   end
 end 
